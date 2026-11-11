@@ -1,0 +1,17 @@
+name: rdp
+on: workflow_dispatch
+
+jobs:
+  rdp:
+    runs-on: windows-2022
+    timeout-minutes: 350
+    steps:
+      - name: Criar usuario e ativar RDP
+        shell: powershell
+        run: |
+          $pw = ConvertTo-SecureString "Minacraft@123" -AsPlainText -Force
+          New-LocalUser -Name "gamer" -Password $pw -AccountNeverExpires
+          Add-LocalGroupMember -Group "Administrators" -Member "gamer"
+          Add-LocalGroupMember -Group "Remote Desktop Users" -Member "gamer"
+          Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0
+          Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Name "UserAuthentication" -Value 0
